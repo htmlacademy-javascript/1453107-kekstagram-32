@@ -2,14 +2,12 @@
 
 const checkStringLength = (str, maxLength) => str.length <= maxLength;
 
-console.group();
 // Строка короче 20 символов
-console.log(checkStringLength('проверяемая строка', 20)); // true
+checkStringLength('проверяемая строка', 20); // true
 // Длина строки ровно 18 символов
-console.log(checkStringLength('проверяемая строка', 18)); // true
+checkStringLength('проверяемая строка', 18); // true
 // Строка длиннее 10 символов
-console.log(checkStringLength('проверяемая строка', 10)); // false
-console.groupEnd();
+checkStringLength('проверяемая строка', 10); // false
 
 
 const isPalindrome = (string) => {
@@ -26,16 +24,14 @@ const isPalindrome = (string) => {
   return true;
 };
 
-console.group();
 // Строка является палиндромом
-console.log(isPalindrome('топот')); // true
+isPalindrome('топот'); // true
 // Несмотря на разный регистр, тоже палиндром
-console.log(isPalindrome('ДовОд')); // true
+isPalindrome('ДовОд'); // true
 // Это не палиндром
-console.log(isPalindrome('Кекс')); // false
+isPalindrome('Кекс'); // false
 // Это палиндром
-console.log(isPalindrome('Лёша на полке клопа нашёл ')); // true
-console.groupEnd();
+isPalindrome('Лёша на полке клопа нашёл '); // true
 
 
 const getNumberFromString = (string) => {
@@ -52,13 +48,12 @@ const getNumberFromString = (string) => {
   return arr.length === 0 ? NaN : Number(arr.join(''));
 };
 
-console.group();
-console.log(getNumberFromString('2023 год')); // 2023
-console.log(getNumberFromString('ECMAScript 2022')); // 2022
-console.log(getNumberFromString('1 кефир, 0.5 батона')); // 105
-console.log(getNumberFromString('агент 007')); // 7
-console.log(getNumberFromString('а я томат')); // NaN
-console.log(getNumberFromString(2023)); // 2023
-console.log(getNumberFromString(-1)); // 1
-console.log(getNumberFromString(1.5)); // 15
-console.groupEnd();
+getNumberFromString('2023 год'); // 2023
+getNumberFromString('ECMAScript 2022'); // 2022
+getNumberFromString('1 кефир, 0.5 батона'); // 105
+getNumberFromString('агент 007'); // 7
+getNumberFromString('а я томат'); // NaN
+getNumberFromString(2023); // 2023
+getNumberFromString(-1); // 1
+getNumberFromString(1.5); // 15
+
