@@ -1,4 +1,4 @@
-
+// ----- 2.31. Нужно больше функций -----
 
 const checkStringLength = (str, maxLength) => str.length <= maxLength;
 
@@ -57,3 +57,32 @@ getNumberFromString(2023); // 2023
 getNumberFromString(-1); // 1
 getNumberFromString(1.5); // 15
 
+
+// ----- 5.16. Функции возвращаются -----
+
+const getTimeInMinutes = (strTime) => {
+  let [hours, minutes] = strTime.split(':');
+
+  hours = Number(hours);
+  minutes = Number(minutes);
+
+  return hours * 60 + minutes;
+};
+
+const checkIfMeetingPossible = (workTimeStart, workTimeEnd, meetingTimeStart, meetingDuration) => {
+  workTimeStart = getTimeInMinutes(workTimeStart);
+  workTimeEnd = getTimeInMinutes(workTimeEnd);
+  meetingTimeStart = getTimeInMinutes(meetingTimeStart);
+
+  if (workTimeStart <= meetingTimeStart && workTimeEnd >= meetingTimeStart + meetingDuration) {
+    return true;
+  }
+
+  return false;
+};
+
+console.log(checkIfMeetingPossible('08:00', '17:30', '14:00', 90)); // true
+console.log(checkIfMeetingPossible('8:0', '10:0', '8:0', 120));     // true
+console.log(checkIfMeetingPossible('08:00', '14:30', '14:00', 90)); // false
+console.log(checkIfMeetingPossible('14:00', '17:30', '08:0', 90));  // false
+console.log(checkIfMeetingPossible('8:00', '17:30', '08:00', 900)); // false
