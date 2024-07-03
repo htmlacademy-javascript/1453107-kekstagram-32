@@ -95,8 +95,4 @@ const getPhotoObj = () => {
   };
 };
 
-const gallery = createArrayOfObjects(MAX_AMOUNT_PHOTOS, getPhotoObj);
-console.log(gallery);
-// console.table(gallery);
-// console.table(gallery[0].comments);
-
+createArrayOfObjects(MAX_AMOUNT_PHOTOS, getPhotoObj);
