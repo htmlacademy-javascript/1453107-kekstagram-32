@@ -1,3 +1,10 @@
+const MAX_AMOUNT_MESSAGES = 2;
+const MAX_AMOUNT_AVATARS = 6;
+const MIN_AMOUNT_LIKES = 15;
+const MAX_AMOUNT_LIKES = 200;
+const MAX_AMOUNT_COMMENTS = 30;
+const MAX_AMOUNT_PHOTOS = 25;
+
 const namesArray = [
   'Ева',
   'Максим',
@@ -28,6 +35,11 @@ const descriptionsArray = [
   'Любимое время года.'
 ];
 
+const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+
+const getRandomItemFromArray = (array) => array[getRandomNumber(0, array.length - 1)];
+
+const createArrayOfObjects = (length, objConstructor) => Array.from({length}, objConstructor);
 
 const getId = () => {
   let i = 1;
@@ -46,24 +58,24 @@ const getUrl = (folder, format) => function (title) {
 const getPhotoUrl = getUrl('photos', 'jpg');
 const getAvatarUrl = getUrl('img', 'svg');
 
-const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
-
-const getRandomItemFromArray = (array) => array[getRandomNumber(0, array.length - 1)];
-
 
 const getMessage = () => {
-  const ammount = getRandomNumber(1, 2);
+  const amount = getRandomNumber(1, MAX_AMOUNT_MESSAGES);
   const messages = [];
 
-  while (messages.length < ammount) {
-    messages.push(getRandomItemFromArray(messagesArray));
+  while (messages.length < amount) {
+    const newMessage = getRandomItemFromArray(messagesArray);
+
+    if (!messages.includes(newMessage)) {
+      messages.push(newMessage);
+    }
   }
 
   return messages.join(' ');
 };
 
 const getCommentObj = () => {
-  const title = `avatar-${getRandomNumber(1, 6)}`;
+  const title = `avatar-${getRandomNumber(1, MAX_AMOUNT_AVATARS)}`;
   return {
     id: getCommentId(),
     avatar: getAvatarUrl(title),
@@ -72,28 +84,19 @@ const getCommentObj = () => {
   };
 };
 
-const getComments = () => {
-  const comments = [];
-  const ammount = getRandomNumber(0, 30);
-
-  while (comments.length < ammount) {
-    comments.push(getCommentObj());
-  }
-
-  return comments;
-};
-
 const getPhotoObj = () => {
   const id = getPhotoId();
   return {
     id,
     url: getPhotoUrl(id),
     description: getRandomItemFromArray(descriptionsArray),
-    likes: getRandomNumber(15, 200),
-    comments: getComments()
+    likes: getRandomNumber(MIN_AMOUNT_LIKES, MAX_AMOUNT_LIKES),
+    comments: createArrayOfObjects(getRandomNumber(0, MAX_AMOUNT_COMMENTS), getCommentObj)
   };
 };
 
-
-const gallery = Array.from({length: 25}, getPhotoObj);
+const gallery = createArrayOfObjects(MAX_AMOUNT_PHOTOS, getPhotoObj);
 console.log(gallery);
+// console.table(gallery);
+// console.table(gallery[0].comments);
+
