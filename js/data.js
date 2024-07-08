@@ -6,8 +6,6 @@ import {
   getUrl
 } from './util.js';
 
-const MAX_AMOUNT_PHOTOS = 25;
-
 const MAX_AMOUNT_MESSAGES = 2;
 const MAX_AMOUNT_AVATARS = 6;
 const MIN_AMOUNT_LIKES = 15;
@@ -89,6 +87,5 @@ const getPhotoObj = () => {
 };
 
 export {
-  MAX_AMOUNT_PHOTOS,
   getPhotoObj
 };
