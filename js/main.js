@@ -1,4 +1,5 @@
-import { createArrayOfObjects } from './util.js';
-import { MAX_AMOUNT_PHOTOS, getPhotoObj} from './data.js';
+import { showThumbnails } from './thumbnails.js';
 
-createArrayOfObjects(MAX_AMOUNT_PHOTOS, getPhotoObj);
+const MAX_AMOUNT_PHOTOS = 25;
+
+showThumbnails(MAX_AMOUNT_PHOTOS);
