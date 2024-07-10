@@ -33,6 +33,8 @@ const showThumbnails = (amount) => {
 };
 
 gallery.addEventListener('click', (evt) => {
+  evt.preventDefault();
+
   if (evt.target.matches('img')) {
     const pictureId = Number(evt.target.closest('a').id);
     openBigPictureModal(thumbnailsArray[pictureId - 1]);
