@@ -15,11 +15,14 @@ const getUrl = (folder, format) => function (title) {
   return `${folder}/${title}.${format}`;
 };
 
+const isEscapeKey = (evt) => evt.code === 'Escape';
+
 
 export {
   getRandomNumber,
   getRandomItemFromArray,
   createArrayOfObjects,
   getId,
-  getUrl
+  getUrl,
+  isEscapeKey
 };
