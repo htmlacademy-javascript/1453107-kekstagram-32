@@ -1,5 +1,3 @@
-import { createArrayOfObjects } from './util.js';
-import { getPhotoObj } from './data.js';
 import { openBigPictureModal } from './bigPicture.js';
 
 const gallery = document.querySelector('.pictures');
@@ -8,16 +6,13 @@ const thumbnailTemplate = document
   .content
   .querySelector('.picture');
 
-let thumbnailsArray;
-
-const showThumbnails = (amount) => {
-  thumbnailsArray = createArrayOfObjects(amount, getPhotoObj);
+const showThumbnails = (thumbnailsArray) => {
   const thumbnailsGalleryFragment = document.createDocumentFragment();
 
   thumbnailsArray.forEach(({id, url, description, likes, comments}) => {
     const newThumbnail = thumbnailTemplate.cloneNode(true);
 
-    newThumbnail.id = id;
+    newThumbnail.dataset.photoId = id;
 
     const picture = newThumbnail.querySelector('.picture__img');
     picture.src = url;
@@ -32,11 +27,19 @@ const showThumbnails = (amount) => {
   gallery.append(thumbnailsGalleryFragment);
 };
 
-gallery.addEventListener('click', (evt) => {
-  if (evt.target.matches('img')) {
-    const pictureId = Number(evt.target.closest('a').id);
-    openBigPictureModal(thumbnailsArray[pictureId - 1]);
-  }
-});
+const galleryListener = (thumbnailsArray) => {
+  gallery?.addEventListener('click', (evt) => {
+    evt.preventDefault();
 
-export { showThumbnails };
+    if (evt.target.matches('img')) {
+      const photoId = Number(evt.target.closest('a').dataset.photoId);
+      openBigPictureModal(thumbnailsArray.find((el) => el.id === photoId));
+    }
+  });
+};
+
+
+export {
+  showThumbnails,
+  galleryListener
+};

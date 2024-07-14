@@ -1,5 +1,6 @@
-import { showThumbnails } from './thumbnails.js';
+import { thumbnailsArray } from './data.js';
+import { showThumbnails, galleryListener } from './thumbnails.js';
 
-const MAX_AMOUNT_PHOTOS = 25;
+showThumbnails(thumbnailsArray);
+galleryListener(thumbnailsArray);
 
-showThumbnails(MAX_AMOUNT_PHOTOS);
