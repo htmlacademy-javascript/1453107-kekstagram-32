@@ -20,12 +20,6 @@ const moreCommentsBtn = bigPictureModal.querySelector('.comments-loader');
 let showCommentsFunc;
 
 
-const onDocumentKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    closeBigPictureModal();
-  }
-};
-
 const createElement = (tagName, className) => {
   const element = document.createElement(tagName);
   element.classList.add(className);
@@ -105,6 +99,12 @@ const closeBigPictureModal = () => {
   moreCommentsBtn.removeEventListener('click', showCommentsFunc);
   document.removeEventListener('keydown', onDocumentKeydown);
 };
+
+function onDocumentKeydown (evt) {
+  if (isEscapeKey(evt)) {
+    closeBigPictureModal();
+  }
+}
 
 closeModalBtn.addEventListener('click', closeBigPictureModal);
 
