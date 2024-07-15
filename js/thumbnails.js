@@ -29,11 +29,13 @@ const showThumbnails = (thumbnailsArray) => {
 
 const galleryListener = (thumbnailsArray) => {
   gallery?.addEventListener('click', (evt) => {
-    evt.preventDefault();
+    if (!document.body.classList.contains('modal-open')) {
+      evt.preventDefault();
 
-    if (evt.target.matches('img')) {
-      const photoId = Number(evt.target.closest('a').dataset.photoId);
-      openBigPictureModal(thumbnailsArray.find((el) => el.id === photoId));
+      if (evt.target.matches('img')) {
+        const photoId = Number(evt.target.closest('a').dataset.photoId);
+        openBigPictureModal(thumbnailsArray.find((el) => el.id === photoId));
+      }
     }
   });
 };
