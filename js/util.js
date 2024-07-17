@@ -16,6 +16,7 @@ const getUrl = (folder, format) => function (title) {
 };
 
 const isEscapeKey = (evt) => evt.code === 'Escape';
+const isNotFormInput = () => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA';
 
 
 export {
@@ -24,5 +25,6 @@ export {
   createArrayOfObjects,
   getId,
   getUrl,
-  isEscapeKey
+  isEscapeKey,
+  isNotFormInput
 };

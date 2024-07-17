@@ -28,10 +28,11 @@ const showThumbnails = (thumbnailsArray) => {
 };
 
 const galleryListener = (thumbnailsArray) => {
-  gallery?.addEventListener('click', (evt) => {
-    evt.preventDefault();
 
-    if (evt.target.matches('img')) {
+  gallery.addEventListener('click', (evt) => {
+
+    if (evt.target.closest('a')) {
+      evt.preventDefault();
       const photoId = Number(evt.target.closest('a').dataset.photoId);
       openBigPictureModal(thumbnailsArray.find((el) => el.id === photoId));
     }
