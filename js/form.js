@@ -9,31 +9,27 @@ const MAX_DESCRIPTION_LENGTH = 140;
 
 const SCALE_STEP = 25;
 
-const form = document.querySelector('.img-upload__form');
-const imgInput = document.querySelector('.img-upload__input');
-const closeBtn = document.querySelector('.img-upload__cancel');
-
-const imgScaleFieldset = document.querySelector('.img-upload__scale');
-const scaleSmallerBtn = imgScaleFieldset.querySelector('.scale__control--smaller');
-const scaleBiggerBtn = imgScaleFieldset.querySelector('.scale__control--bigger');
-const imgScaleInput = imgScaleFieldset.querySelector('.scale__control--value');
-
-const imgPreview = document
-  .querySelector('.img-upload__preview')
-  .querySelector('img');
-// const smallPreviews = document.querySelectorAll('.effects__preview');
-const effectsList = document.querySelector('.effects__list');
-
-
-const hashtagsInput = document.querySelector('.text__hashtags');
-const descriptionInput = document.querySelector('.text__description');
-
 const overlay = document.querySelector('.img-upload__overlay');
 
-const effectLevelBox = document.querySelector('.img-upload__effect-level');
-const effectLevelValue = document.querySelector('.effect-level__value');
+const form = document.querySelector('.img-upload__form');
+const imgInput = form.querySelector('.img-upload__input');
+const closeBtn = form.querySelector('.img-upload__cancel');
 
-const effectSlider = document.querySelector('.effect-level__slider');
+const imgScaleFieldset = form.querySelector('.img-upload__scale');
+const imgScaleInput = imgScaleFieldset.querySelector('.scale__control--value');
+
+const imgPreview = form
+  .querySelector('.img-upload__preview')
+  .querySelector('img');
+// const smallPreviews = form.querySelectorAll('.effects__preview');
+const effectsList = form.querySelector('.effects__list');
+
+const hashtagsInput = form.querySelector('.text__hashtags');
+const descriptionInput = form.querySelector('.text__description');
+
+const effectLevelBox = form.querySelector('.img-upload__effect-level');
+const effectLevelValue = effectLevelBox.querySelector('.effect-level__value');
+const effectSlider = effectLevelBox.querySelector('.effect-level__slider');
 
 const hashtagReg = /^#[а-яёa-z0-9]{1,19}$/;
 
@@ -138,6 +134,24 @@ noUiSlider.create(effectSlider, {
   connect: 'lower'
 });
 
+effectSlider.noUiSlider.on('update', () => {
+  const value = effectSlider.noUiSlider.get();
+
+  if (currentImgEffect === 'none') {
+    imgPreview.style.filter = 'none';
+    effectLevelValue.value = '';
+    effectLevelBox.classList.add('hidden');
+
+  } else {
+    const filter = effectsData[currentImgEffect].filter;
+    const unit = effectsData[currentImgEffect].unit;
+
+    imgPreview.style.filter = `${filter}(${value}${unit})`;
+    effectLevelValue.value = value;
+    effectLevelBox.classList.remove('hidden');
+  }
+});
+
 
 const validateHashtag = (value) => {
 
@@ -205,6 +219,33 @@ const addValidators = () => {
   );
 };
 
+const chageImgScale = (evt) => {
+  if (evt.target.tagName !== 'BUTTON') {
+    return;
+  }
+
+  const currentValue = Number.parseInt(imgScaleInput.value, 10);
+  let newValue;
+
+  if (evt.target.classList.contains('scale__control--smaller')) {
+    newValue = currentValue <= SCALE_STEP ? SCALE_STEP : currentValue - SCALE_STEP;
+  } else {
+    newValue = currentValue > 100 - SCALE_STEP ? 100 : currentValue + SCALE_STEP;
+  }
+
+  imgScaleInput.value = `${newValue}%`;
+  imgPreview.style.transform = `scale(${newValue / 100})`;
+};
+
+const changeEffect = (evt) => {
+  const effect = evt.target.value;
+
+  const newOptions = effectsData[effect].effectsObj;
+  currentImgEffect = effect;
+
+  effectSlider.noUiSlider.updateOptions(newOptions);
+};
+
 const openUploadImgModal = () => {
   // imgScaleInput.value = `100%`;
   //-----
@@ -213,6 +254,7 @@ const openUploadImgModal = () => {
   //   preview.style.backgroundImage = 'url(../img/logo-background-2.jpg)';
   // });
   //-----
+  imgPreview.style.transform = 'none';
   currentImgEffect = 'none';
   effectSlider.noUiSlider.set();
 
@@ -220,6 +262,9 @@ const openUploadImgModal = () => {
 
   overlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
+
+  imgScaleFieldset.addEventListener('click', chageImgScale);
+  effectsList.addEventListener('change', changeEffect);
 
   document.addEventListener('keydown', onDocumentKeydown);
   form.addEventListener('submit', onFormSubmit);
@@ -230,6 +275,9 @@ const openUploadImgModal = () => {
 const closeUploadImgModal = () => {
   overlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
+
+  imgScaleFieldset.removeEventListener('click', chageImgScale);
+  effectsList.removeEventListener('change', changeEffect);
 
   document.removeEventListener('keydown', onDocumentKeydown);
   form.removeEventListener('submit', onFormSubmit);
@@ -246,10 +294,10 @@ function onFormSubmit (evt) {
   const isValid = pristine.validate();
 
   if (isValid) {
-    console.log('Можно отправлять');
+    // console.log('Можно отправлять');
     closeUploadImgModal();
   } else {
-    console.log('Форма невалидна');
+    // console.log('Форма невалидна');
   }
 }
 
@@ -267,77 +315,3 @@ closeBtn.addEventListener('click', closeUploadImgModal);
 
 
 export { imgInputListener };
-
-
-
-
-
-
-
-const getScaleValueAsNumber = () => Number.parseInt(imgScaleInput.value, 10);
-
-const makeImgSmaller = () => {
-  const currentValue = getScaleValueAsNumber();
-  const newValue = currentValue <= SCALE_STEP ? SCALE_STEP : currentValue - SCALE_STEP;
-
-  imgScaleInput.value = `${newValue}%`;
-  // changeImgScale();
-};
-
-const makeImgBigger = () => {
-  const currentValue = getScaleValueAsNumber();
-  const newValue = currentValue > 100 - SCALE_STEP ? 100 : currentValue + SCALE_STEP;
-
-  imgScaleInput.value = `${newValue}%`;
-  // changeImgScale();
-};
-
-const changeImgScale = () => {
-  const value = getScaleValueAsNumber();
-  console.log(value / 100);
-  imgPreview.style.transform = `scale(${value / 100})`;
-};
-
-scaleSmallerBtn.addEventListener('click', makeImgSmaller);
-scaleBiggerBtn.addEventListener('click', makeImgBigger);
-
-imgScaleInput.addEventListener('input', changeImgScale);
-
-
-
-
-
-
-
-
-
-
-const changeEffect = (evt) => {
-  const effect = evt.target.value;
-
-  const newOptions = effectsData[effect].effectsObj;
-  currentImgEffect = effect;
-
-  effectSlider.noUiSlider.updateOptions(newOptions);
-};
-
-effectSlider.noUiSlider.on('update', () => {
-  const value = effectSlider.noUiSlider.get();
-
-  if (currentImgEffect === 'none') {
-    imgPreview.style.filter = 'none';
-    effectLevelValue.value = '';
-    effectLevelBox.classList.add('hidden');
-
-  } else {
-    const filter = effectsData[currentImgEffect].filter;
-    const unit = effectsData[currentImgEffect].unit;
-
-    imgPreview.style.filter = `${filter}(${value}${unit})`;
-    effectLevelValue.value = value;
-    effectLevelBox.classList.remove('hidden');
-  }
-});
-
-effectsList.addEventListener('change', changeEffect);
-
