@@ -1,4 +1,4 @@
-import { openBigPictureModal } from './bigPicture.js';
+import { openBigPictureModal } from './big-picture.js';
 
 const gallery = document.querySelector('.pictures');
 const thumbnailTemplate = document

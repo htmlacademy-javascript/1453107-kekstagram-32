@@ -2,6 +2,7 @@ import '../vendor/pristine/pristine.min.js';
 import '../vendor/nouislider/nouislider.js';
 
 import { isEscapeKey, isNotFormInput } from './util.js';
+import { sendData } from './api.js';
 
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
@@ -14,6 +15,7 @@ const overlay = document.querySelector('.img-upload__overlay');
 const form = document.querySelector('.img-upload__form');
 const imgInput = form.querySelector('.img-upload__input');
 const closeBtn = form.querySelector('.img-upload__cancel');
+const submitBtn = form.querySelector('.img-upload__submit');
 
 const imgScaleFieldset = form.querySelector('.img-upload__scale');
 const imgScaleInput = imgScaleFieldset.querySelector('.scale__control--value');
@@ -294,10 +296,21 @@ function onFormSubmit (evt) {
   const isValid = pristine.validate();
 
   if (isValid) {
-    // console.log('Можно отправлять');
-    closeUploadImgModal();
+    console.log('Можно отправлять');
+    submitBtn.disabled = true;
+
+    const formData = new FormData(form);
+    sendData(formData)
+      .then(() => {
+        closeUploadImgModal();
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        submitBtn.disabled = false;
+      });
+
   } else {
-    // console.log('Форма невалидна');
+    console.log('Форма невалидна');
   }
 }
 
