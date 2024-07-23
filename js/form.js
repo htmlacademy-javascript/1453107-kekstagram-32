@@ -33,6 +33,16 @@ const effectLevelBox = form.querySelector('.img-upload__effect-level');
 const effectLevelValue = effectLevelBox.querySelector('.effect-level__value');
 const effectSlider = effectLevelBox.querySelector('.effect-level__slider');
 
+const successMessageTemplate = document
+  .querySelector('#success')
+  .content
+  .querySelector('.success');
+
+const errorMessageTemplate = document
+  .querySelector('#error')
+  .content
+  .querySelector('.error');
+
 const hashtagReg = /^#[а-яёa-z0-9]{1,19}$/;
 
 const hashtagsErrorMessageTemplates = {
@@ -268,7 +278,7 @@ const openUploadImgModal = () => {
   imgScaleFieldset.addEventListener('click', chageImgScale);
   effectsList.addEventListener('change', changeEffect);
 
-  document.addEventListener('keydown', onDocumentKeydown);
+  document.addEventListener('keydown', onDocumentKeydownModal);
   form.addEventListener('submit', onFormSubmit);
 
   addValidators();
@@ -281,7 +291,7 @@ const closeUploadImgModal = () => {
   imgScaleFieldset.removeEventListener('click', chageImgScale);
   effectsList.removeEventListener('change', changeEffect);
 
-  document.removeEventListener('keydown', onDocumentKeydown);
+  document.removeEventListener('keydown', onDocumentKeydownModal);
   form.removeEventListener('submit', onFormSubmit);
 
   form.reset();
@@ -289,6 +299,34 @@ const closeUploadImgModal = () => {
   pristine.destroy();
 };
 
+let popupMessage = null;
+let popupMessageBtn = null;
+
+const closePopupMessage = () => {
+  document.body.removeChild(popupMessage);
+
+  popupMessageBtn.removeEventListener('click', closePopupMessage);
+  popupMessage.removeEventListener('click', closePopupMessage);
+
+  document.addEventListener('keydown', onDocumentKeydownModal);
+  document.removeEventListener('keydown', onDocumentKeydownPopups);
+
+  popupMessage = null;
+  popupMessageBtn = null;
+};
+
+const showPopupMessage = (template) => {
+  popupMessage = template.cloneNode(true);
+  popupMessageBtn = popupMessage.querySelector('button');
+
+  popupMessageBtn.addEventListener('click', closePopupMessage);
+  popupMessage.addEventListener('click', closePopupMessage);
+
+  document.removeEventListener('keydown', onDocumentKeydownModal);
+  document.addEventListener('keydown', onDocumentKeydownPopups);
+
+  document.body.append(popupMessage);
+};
 
 function onFormSubmit (evt) {
   evt.preventDefault();
@@ -302,9 +340,12 @@ function onFormSubmit (evt) {
     const formData = new FormData(form);
     sendData(formData)
       .then(() => {
+        showPopupMessage(successMessageTemplate);
         closeUploadImgModal();
       })
-      .catch((err) => console.log(err))
+      .catch(() => {
+        showPopupMessage(errorMessageTemplate);
+      })
       .finally(() => {
         submitBtn.disabled = false;
       });
@@ -314,9 +355,15 @@ function onFormSubmit (evt) {
   }
 }
 
-function onDocumentKeydown (evt) {
+function onDocumentKeydownModal (evt) {
   if (isEscapeKey(evt) && isNotFormInput()) {
     closeUploadImgModal();
+  }
+}
+
+function onDocumentKeydownPopups (evt) {
+  if (isEscapeKey(evt) && popupMessage && evt.target.tagName === 'SECTION') {
+    closePopupMessage();
   }
 }
 
