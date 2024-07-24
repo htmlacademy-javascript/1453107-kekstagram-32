@@ -1,7 +1,8 @@
 import '../vendor/pristine/pristine.min.js';
 import '../vendor/nouislider/nouislider.js';
 
-import { isEscapeKey, isNotFormInput } from './util.js';
+import { isEscapeKey, isNotFormInput, hasAllowedTagName } from './util.js';
+import { sendData } from './api.js';
 
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
@@ -14,6 +15,7 @@ const overlay = document.querySelector('.img-upload__overlay');
 const form = document.querySelector('.img-upload__form');
 const imgInput = form.querySelector('.img-upload__input');
 const closeBtn = form.querySelector('.img-upload__cancel');
+const submitBtn = form.querySelector('.img-upload__submit');
 
 const imgScaleFieldset = form.querySelector('.img-upload__scale');
 const imgScaleInput = imgScaleFieldset.querySelector('.scale__control--value');
@@ -30,6 +32,16 @@ const descriptionInput = form.querySelector('.text__description');
 const effectLevelBox = form.querySelector('.img-upload__effect-level');
 const effectLevelValue = effectLevelBox.querySelector('.effect-level__value');
 const effectSlider = effectLevelBox.querySelector('.effect-level__slider');
+
+const successMessageTemplate = document
+  .querySelector('#success')
+  .content
+  .querySelector('.success');
+
+const errorMessageTemplate = document
+  .querySelector('#error')
+  .content
+  .querySelector('.error');
 
 const hashtagReg = /^#[а-яёa-z0-9]{1,19}$/;
 
@@ -122,6 +134,7 @@ const effectsData = {
 
 let pristine;
 let currentImgEffect = 'none';
+let popupMessage = null;
 
 
 noUiSlider.create(effectSlider, {
@@ -220,7 +233,8 @@ const addValidators = () => {
 };
 
 const chageImgScale = (evt) => {
-  if (evt.target.tagName !== 'BUTTON') {
+
+  if (!hasAllowedTagName(evt.target, ['BUTTON'])) {
     return;
   }
 
@@ -266,7 +280,7 @@ const openUploadImgModal = () => {
   imgScaleFieldset.addEventListener('click', chageImgScale);
   effectsList.addEventListener('change', changeEffect);
 
-  document.addEventListener('keydown', onDocumentKeydown);
+  document.addEventListener('keydown', onDocumentKeydownModal);
   form.addEventListener('submit', onFormSubmit);
 
   addValidators();
@@ -279,7 +293,7 @@ const closeUploadImgModal = () => {
   imgScaleFieldset.removeEventListener('click', chageImgScale);
   effectsList.removeEventListener('change', changeEffect);
 
-  document.removeEventListener('keydown', onDocumentKeydown);
+  document.removeEventListener('keydown', onDocumentKeydownModal);
   form.removeEventListener('submit', onFormSubmit);
 
   form.reset();
@@ -287,6 +301,27 @@ const closeUploadImgModal = () => {
   pristine.destroy();
 };
 
+const closePopupMessage = () => {
+  document.body.removeChild(popupMessage);
+
+  popupMessage.removeEventListener('click', onPopupMessageClick);
+  document.addEventListener('keydown', onDocumentKeydownModal);
+  document.removeEventListener('keydown', onDocumentKeydownPopups);
+
+  popupMessage = null;
+  document.body.classList.remove('modal-open');
+};
+
+const showPopupMessage = (template) => {
+  popupMessage = template.cloneNode(true);
+
+  popupMessage.addEventListener('click', onPopupMessageClick);
+  document.removeEventListener('keydown', onDocumentKeydownModal);
+  document.addEventListener('keydown', onDocumentKeydownPopups);
+
+  document.body.append(popupMessage);
+  document.body.classList.add('modal-open');
+};
 
 function onFormSubmit (evt) {
   evt.preventDefault();
@@ -294,16 +329,42 @@ function onFormSubmit (evt) {
   const isValid = pristine.validate();
 
   if (isValid) {
-    // console.log('Можно отправлять');
-    closeUploadImgModal();
+    console.log('Можно отправлять');
+    submitBtn.disabled = true;
+
+    const formData = new FormData(form);
+    sendData(formData)
+      .then(() => {
+        closeUploadImgModal();
+        showPopupMessage(successMessageTemplate);
+      })
+      .catch(() => {
+        showPopupMessage(errorMessageTemplate);
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+      });
+
   } else {
-    // console.log('Форма невалидна');
+    console.log('Форма невалидна');
   }
 }
 
-function onDocumentKeydown (evt) {
+function onDocumentKeydownModal (evt) {
   if (isEscapeKey(evt) && isNotFormInput()) {
     closeUploadImgModal();
+  }
+}
+
+function onDocumentKeydownPopups (evt) {
+  if (isEscapeKey(evt) && popupMessage) {
+    closePopupMessage();
+  }
+}
+
+function onPopupMessageClick (evt) {
+  if (popupMessage && hasAllowedTagName(evt.target, ['SECTION', 'BUTTON'])) {
+    closePopupMessage();
   }
 }
 

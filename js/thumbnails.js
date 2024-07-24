@@ -1,10 +1,20 @@
-import { openBigPictureModal } from './bigPicture.js';
+import { openBigPictureModal } from './big-picture.js';
+import { getData } from './api.js';
+
+const DELAY_TIME = 5000;
 
 const gallery = document.querySelector('.pictures');
+
 const thumbnailTemplate = document
   .querySelector('#picture')
   .content
   .querySelector('.picture');
+
+const errorMessageTemplate = document
+  .querySelector('#data-error')
+  .content
+  .querySelector('.data-error');
+
 
 const showThumbnails = (thumbnailsArray) => {
   const thumbnailsGalleryFragment = document.createDocumentFragment();
@@ -39,8 +49,26 @@ const galleryListener = (thumbnailsArray) => {
   });
 };
 
+const showErrorMessage = (text) => {
+  const newErrorMessage = errorMessageTemplate.cloneNode(true);
+  newErrorMessage.querySelector('.data-error__title').textContent = text;
+  document.body.append(newErrorMessage);
+
+  setTimeout(() => {
+    document.body.removeChild(newErrorMessage);
+  }, DELAY_TIME);
+};
+
+const loadGallery = () => {
+  getData()
+    .then((res) => {
+      showThumbnails(res);
+      galleryListener(res);
+    })
+    .catch((err) => showErrorMessage(err.message));
+};
+
 
 export {
-  showThumbnails,
-  galleryListener
+  loadGallery
 };
