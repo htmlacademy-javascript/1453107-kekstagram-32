@@ -1,7 +1,7 @@
 import '../vendor/pristine/pristine.min.js';
 import '../vendor/nouislider/nouislider.js';
 
-import { isEscapeKey, isNotFormInput } from './util.js';
+import { isEscapeKey, isNotFormInput, hasAllowedTagName } from './util.js';
 import { sendData } from './api.js';
 
 const MAX_HASHTAGS_COUNT = 5;
@@ -134,6 +134,7 @@ const effectsData = {
 
 let pristine;
 let currentImgEffect = 'none';
+let popupMessage = null;
 
 
 noUiSlider.create(effectSlider, {
@@ -232,7 +233,8 @@ const addValidators = () => {
 };
 
 const chageImgScale = (evt) => {
-  if (evt.target.tagName !== 'BUTTON') {
+
+  if (!hasAllowedTagName(evt.target, ['BUTTON'])) {
     return;
   }
 
@@ -299,33 +301,26 @@ const closeUploadImgModal = () => {
   pristine.destroy();
 };
 
-let popupMessage = null;
-let popupMessageBtn = null;
-
 const closePopupMessage = () => {
   document.body.removeChild(popupMessage);
 
-  popupMessageBtn.removeEventListener('click', closePopupMessage);
-  popupMessage.removeEventListener('click', closePopupMessage);
-
+  popupMessage.removeEventListener('click', onPopupMessageClick);
   document.addEventListener('keydown', onDocumentKeydownModal);
   document.removeEventListener('keydown', onDocumentKeydownPopups);
 
   popupMessage = null;
-  popupMessageBtn = null;
+  document.body.classList.remove('modal-open');
 };
 
 const showPopupMessage = (template) => {
   popupMessage = template.cloneNode(true);
-  popupMessageBtn = popupMessage.querySelector('button');
 
-  popupMessageBtn.addEventListener('click', closePopupMessage);
-  popupMessage.addEventListener('click', closePopupMessage);
-
+  popupMessage.addEventListener('click', onPopupMessageClick);
   document.removeEventListener('keydown', onDocumentKeydownModal);
   document.addEventListener('keydown', onDocumentKeydownPopups);
 
   document.body.append(popupMessage);
+  document.body.classList.add('modal-open');
 };
 
 function onFormSubmit (evt) {
@@ -340,8 +335,8 @@ function onFormSubmit (evt) {
     const formData = new FormData(form);
     sendData(formData)
       .then(() => {
-        showPopupMessage(successMessageTemplate);
         closeUploadImgModal();
+        showPopupMessage(successMessageTemplate);
       })
       .catch(() => {
         showPopupMessage(errorMessageTemplate);
@@ -362,7 +357,13 @@ function onDocumentKeydownModal (evt) {
 }
 
 function onDocumentKeydownPopups (evt) {
-  if (isEscapeKey(evt) && popupMessage && evt.target.tagName === 'SECTION') {
+  if (isEscapeKey(evt) && popupMessage) {
+    closePopupMessage();
+  }
+}
+
+function onPopupMessageClick (evt) {
+  if (popupMessage && hasAllowedTagName(evt.target, ['SECTION', 'BUTTON'])) {
     closePopupMessage();
   }
 }
