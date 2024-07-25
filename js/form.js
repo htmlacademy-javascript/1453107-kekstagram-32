@@ -329,7 +329,6 @@ function onFormSubmit (evt) {
   const isValid = pristine.validate();
 
   if (isValid) {
-    console.log('Можно отправлять');
     submitBtn.disabled = true;
 
     const formData = new FormData(form);
@@ -344,9 +343,6 @@ function onFormSubmit (evt) {
       .finally(() => {
         submitBtn.disabled = false;
       });
-
-  } else {
-    console.log('Форма невалидна');
   }
 }
 
