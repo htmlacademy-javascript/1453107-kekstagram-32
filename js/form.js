@@ -10,6 +10,8 @@ const MAX_DESCRIPTION_LENGTH = 140;
 
 const SCALE_STEP = 25;
 
+const IMGS_FORMATS = ['jpg', 'jpeg', 'png'];
+
 const overlay = document.querySelector('.img-upload__overlay');
 
 const form = document.querySelector('.img-upload__form');
@@ -23,7 +25,7 @@ const imgScaleInput = imgScaleFieldset.querySelector('.scale__control--value');
 const imgPreview = form
   .querySelector('.img-upload__preview')
   .querySelector('img');
-// const smallPreviews = form.querySelectorAll('.effects__preview');
+const smallPreviews = form.querySelectorAll('.effects__preview');
 const effectsList = form.querySelector('.effects__list');
 
 const hashtagsInput = form.querySelector('.text__hashtags');
@@ -260,14 +262,25 @@ const changeEffect = (evt) => {
   effectSlider.noUiSlider.updateOptions(newOptions);
 };
 
+const setUploadedImg = (file) => {
+  const imgUrl = URL.createObjectURL(file);
+  imgPreview.src = imgUrl;
+  smallPreviews.forEach((preview) => {
+    preview.style.backgroundImage = `url(${imgUrl})`;
+  });
+};
+
 const openUploadImgModal = () => {
-  // imgScaleInput.value = `100%`;
-  //-----
-  // imgPreview.src = '../img/logo-background-2.jpg';
-  // smallPreviews.forEach((preview) => {
-  //   preview.style.backgroundImage = 'url(../img/logo-background-2.jpg)';
-  // });
-  //-----
+  const file = imgInput.files[0];
+  const isRightFormat = IMGS_FORMATS
+    .some((format) => file.name.toLowerCase().endsWith(format));
+
+  if (!isRightFormat) {
+    return;
+  }
+
+  setUploadedImg(file);
+
   imgPreview.style.transform = 'none';
   currentImgEffect = 'none';
   effectSlider.noUiSlider.set();
@@ -346,6 +359,11 @@ function onFormSubmit (evt) {
   }
 }
 
+const imgInputListener = () => {
+  imgInput.addEventListener('change', openUploadImgModal);
+};
+
+
 function onDocumentKeydownModal (evt) {
   if (isEscapeKey(evt) && isNotFormInput()) {
     closeUploadImgModal();
@@ -364,9 +382,6 @@ function onPopupMessageClick (evt) {
   }
 }
 
-const imgInputListener = () => {
-  imgInput.addEventListener('change', openUploadImgModal);
-};
 
 closeBtn.addEventListener('click', closeUploadImgModal);
 
