@@ -13,7 +13,6 @@ const ErrorText = {
 const load = (route, errorText, method, body = null) =>
   fetch(`${BASE_URL}${route}`, {method, body})
     .then((res) => {
-      console.log(`---${method}---`);
       if (!res.ok) {
         throw new Error();
       }
