@@ -1,4 +1,4 @@
-import { isEscapeKey } from './util.js';
+import { isEscapeKey } from './utils.js';
 
 const bigPictureModal = document.querySelector('.big-picture');
 const closeModalBtn = document.querySelector('.big-picture__cancel');
