@@ -1,4 +1,4 @@
-import { loadGallery } from './thumbnails.js';
+import { loadGallery } from './gallery.js';
 import { imgInputListener } from './form.js';
 
 
