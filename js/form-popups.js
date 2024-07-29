@@ -10,7 +10,6 @@ const closePopupMessage = () => {
   document.removeEventListener('keydown', onDocumentKeydownPopups);
 
   popupMessage = null;
-  document.body.classList.remove('modal-open');
   isOpen = false;
 };
 
@@ -22,7 +21,7 @@ const showPopupMessage = (template) => {
   document.addEventListener('keydown', onDocumentKeydownPopups);
 
   document.body.append(popupMessage);
-  document.body.classList.add('modal-open');
+  document.body.classList.remove('modal-open');
 };
 
 const isPopupClosed = () => !isOpen;
