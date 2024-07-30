@@ -33,8 +33,6 @@ const getUrl = (folder, format) => function (title) {
 
 const isEscapeKey = (evt) => evt.code === 'Escape';
 
-const isNotFormInput = () => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA';
-
 const hasAllowedTagName = (element, tagNamesArray) => tagNamesArray.includes(element.tagName);
 
 const existingChildren = (parent, tagName) => Array
@@ -59,7 +57,6 @@ export {
   getId,
   getUrl,
   isEscapeKey,
-  isNotFormInput,
   hasAllowedTagName,
   existingChildren,
   debounce

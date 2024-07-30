@@ -1,5 +1,5 @@
 import { sendData } from './api.js';
-import { isEscapeKey, isNotFormInput, hasAllowedTagName } from './utils.js';
+import { isEscapeKey, hasAllowedTagName } from './utils.js';
 import { resetTransformStyle, resizeImg } from './picture-scale.js';
 import { setEffectSlider, changeEffect } from './picture-effect.js';
 import { addValidators, validateForm, clearValidator } from './form-validation.js';
@@ -36,6 +36,8 @@ const errorMessageTemplate = document
   .content
   .querySelector('.error');
 
+
+const isNotFormInput = () => document.activeElement.name !== 'hashtags' && document.activeElement.name !== 'description';
 
 const chageImgScale = (evt) => {
   if (hasAllowedTagName(evt.target, ['BUTTON'])) {
