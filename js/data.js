@@ -14,7 +14,7 @@ const MIN_AMOUNT_LIKES = 15;
 const MAX_AMOUNT_LIKES = 200;
 const MAX_AMOUNT_COMMENTS = 30;
 
-const namesArray = [
+const names = [
   'Ева',
   'Максим',
   'Полина',
@@ -27,7 +27,7 @@ const namesArray = [
   'Александр',
 ];
 
-const messagesArray = [
+const comments = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -36,7 +36,7 @@ const messagesArray = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-const descriptionsArray = [
+const descriptions = [
   'Мастер быстрых фоток.',
   'Пришлось проснуться в 4 утра для этого кадра.',
   'Не могу поверить, что получилось заснять этот момент!',
@@ -57,7 +57,7 @@ const getMessage = () => {
   const messages = [];
 
   while (messages.length < amount) {
-    const newMessage = getRandomItemFromArray(messagesArray);
+    const newMessage = getRandomItemFromArray(comments);
 
     if (!messages.includes(newMessage)) {
       messages.push(newMessage);
@@ -73,7 +73,7 @@ const getCommentObj = () => {
     id: getCommentId(),
     avatar: getAvatarUrl(title),
     message: getMessage(),
-    name: getRandomItemFromArray(namesArray)
+    name: getRandomItemFromArray(names)
   };
 };
 
@@ -82,14 +82,13 @@ const getPhotoObj = () => {
   return {
     id,
     url: getPhotoUrl(id),
-    description: getRandomItemFromArray(descriptionsArray),
+    description: getRandomItemFromArray(descriptions),
     likes: getRandomNumber(MIN_AMOUNT_LIKES, MAX_AMOUNT_LIKES),
     comments: createArrayOfObjects(getRandomNumber(0, MAX_AMOUNT_COMMENTS), getCommentObj)
   };
 };
 
-const thumbnailsArray = createArrayOfObjects(MAX_AMOUNT_PHOTOS, getPhotoObj);
+const thumbnails = createArrayOfObjects(MAX_AMOUNT_PHOTOS, getPhotoObj);
 
-export {
-  thumbnailsArray
-};
+
+export { thumbnails };

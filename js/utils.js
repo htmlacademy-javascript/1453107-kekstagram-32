@@ -1,19 +1,22 @@
+const DEBOUNCE_DELAY = 500;
+
+
 const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
 const getArrayOfRandomNumbers = (amount, maxNumber) => {
-  const array = [];
+  const numbers = [];
 
-  while (array.length < amount) {
+  while (numbers.length < amount) {
 
     let newNumber = getRandomNumber(0, maxNumber);
-    while (array.includes(newNumber)) {
+    while (numbers.includes(newNumber)) {
       newNumber = getRandomNumber(0, maxNumber);
     }
 
-    array.push(newNumber);
+    numbers.push(newNumber);
   }
 
-  return array;
+  return numbers;
 };
 
 const getRandomItemFromArray = (array) => array[getRandomNumber(0, array.length - 1)];
@@ -33,13 +36,13 @@ const getUrl = (folder, format) => function (title) {
 
 const isEscapeKey = (evt) => evt.code === 'Escape';
 
-const hasAllowedTagName = (element, tagNamesArray) => tagNamesArray.includes(element.tagName);
+const hasAllowedTagName = (element, tagNames) => tagNames.includes(element.tagName);
 
 const existingChildren = (parent, tagName) => Array
   .from(parent.children)
-  .filter((el) => hasAllowedTagName(el, [tagName]));
+  .filter((element) => hasAllowedTagName(element, [tagName]));
 
-function debounce (callback, timeoutDelay = 500) {
+function debounce (callback, timeoutDelay = DEBOUNCE_DELAY) {
   let timeoutId;
 
   return (...rest) => {

@@ -7,7 +7,7 @@ const closePopupMessage = () => {
   document.body.removeChild(popupMessage);
 
   popupMessage.removeEventListener('click', onPopupMessageClick);
-  document.removeEventListener('keydown', onDocumentKeydownPopups);
+  document.removeEventListener('keydown', onDocumentKeydown);
 
   popupMessage = null;
   isOpen = false;
@@ -18,7 +18,7 @@ const showPopupMessage = (template) => {
   popupMessage = template.cloneNode(true);
 
   popupMessage.addEventListener('click', onPopupMessageClick);
-  document.addEventListener('keydown', onDocumentKeydownPopups);
+  document.addEventListener('keydown', onDocumentKeydown);
 
   document.body.append(popupMessage);
   document.body.classList.remove('modal-open');
@@ -26,7 +26,7 @@ const showPopupMessage = (template) => {
 
 const isPopupClosed = () => !isOpen;
 
-function onDocumentKeydownPopups (evt) {
+function onDocumentKeydown (evt) {
   if (isEscapeKey(evt) && popupMessage) {
     closePopupMessage();
   }

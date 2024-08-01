@@ -1,6 +1,6 @@
 // ----- 2.31. Нужно больше функций -----
 
-const checkStringLength = (str, maxLength) => str.length <= maxLength;
+const checkStringLength = (string, maxLength) => string.length <= maxLength;
 
 // Строка короче 20 символов
 checkStringLength('проверяемая строка', 20); // true
@@ -11,12 +11,12 @@ checkStringLength('проверяемая строка', 10); // false
 
 
 const isPalindrome = (string) => {
-  const str = string.toLowerCase().replaceAll(' ', '');
-  const strLength = str.length;
-  const middle = Math.floor(strLength / 2);
+  const clearedString = string.toLowerCase().replaceAll(' ', '');
+  const stringLength = clearedString.length;
+  const middle = Math.floor(stringLength / 2);
 
   for(let i = 1; i <= middle; i++) {
-    if (str.at(i - 1) !== str.at(strLength - i)) {
+    if (clearedString.at(i - 1) !== clearedString.at(stringLength - i)) {
       return false;
     }
   }
@@ -35,17 +35,17 @@ isPalindrome('Лёша на полке клопа нашёл '); // true
 
 
 const getNumberFromString = (string) => {
-  const str = String(string).replaceAll(' ', '');
-  const length = str.length;
-  const arr = [];
+  const clearedString = String(string).replaceAll(' ', '');
+  const stringLength = clearedString.length;
+  const numbers = [];
 
-  for (let i = 0; i < length; i++) {
-    if (!Number.isNaN(Number(str.at(i)))) {
-      arr.push(str.at(i));
+  for (let i = 0; i < stringLength; i++) {
+    if (!Number.isNaN(Number(clearedString.at(i)))) {
+      numbers.push(clearedString.at(i));
     }
   }
 
-  return arr.length === 0 ? NaN : Number(arr.join(''));
+  return numbers.length === 0 ? NaN : Number(numbers.join(''));
 };
 
 getNumberFromString('2023 год'); // 2023
@@ -60,8 +60,8 @@ getNumberFromString(1.5); // 15
 
 // ----- 5.16. Функции возвращаются -----
 
-const getTimeInMinutes = (strTime) => {
-  let [hours, minutes] = strTime.split(':');
+const getTimeInMinutes = (timeString) => {
+  let [hours, minutes] = timeString.split(':');
 
   hours = Number(hours);
   minutes = Number(minutes);
