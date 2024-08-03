@@ -19,21 +19,6 @@ const getArrayOfRandomNumbers = (amount, maxNumber) => {
   return numbers;
 };
 
-const getRandomItemFromArray = (array) => array[getRandomNumber(0, array.length - 1)];
-
-const createArrayOfObjects = (length, objConstructor) => Array.from({length}, objConstructor);
-
-const getId = () => {
-  let i = 1;
-  return function () {
-    return i++;
-  };
-};
-
-const getUrl = (folder, format) => function (title) {
-  return `${folder}/${title}.${format}`;
-};
-
 const isEscapeKey = (evt) => evt.code === 'Escape';
 
 const hasAllowedTagName = (element, tagNames) => tagNames.includes(element.tagName);
@@ -53,12 +38,7 @@ function debounce (callback, timeoutDelay = DEBOUNCE_DELAY) {
 }
 
 export {
-  getRandomNumber,
   getArrayOfRandomNumbers,
-  getRandomItemFromArray,
-  createArrayOfObjects,
-  getId,
-  getUrl,
   isEscapeKey,
   hasAllowedTagName,
   existingChildren,
