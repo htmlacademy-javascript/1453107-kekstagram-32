@@ -1,7 +1,7 @@
 import { isEscapeKey } from './utils.js';
 
 const bigPictureModal = document.querySelector('.big-picture');
-const closeModalBtn = document.querySelector('.big-picture__cancel');
+const closeModalButton = document.querySelector('.big-picture__cancel');
 
 const bigPictureImg = bigPictureModal
   .querySelector('.big-picture__img')
@@ -15,9 +15,9 @@ const shownCommentsCount = commentCount.querySelector('.social__comment-shown-co
 const allCommentsCount = commentCount.querySelector('.social__comment-total-count');
 
 const commentSection = bigPictureModal.querySelector('.social__comments');
-const moreCommentsBtn = bigPictureModal.querySelector('.comments-loader');
+const moreCommentsButton = bigPictureModal.querySelector('.comments-loader');
 
-let showCommentsFunc;
+let onMoreCommentsButtonClick;
 
 
 const createElement = (tagName, className) => {
@@ -26,10 +26,10 @@ const createElement = (tagName, className) => {
   return element;
 };
 
-const getComments = (arrayOfComments) => {
+const getCommentSectionFragment = (comments) => {
   const commentSectionFragment = document.createDocumentFragment();
 
-  arrayOfComments.forEach(({avatar, name, message}) => {
+  comments.forEach(({avatar, name, message}) => {
     const newCommentBlock = createElement('li', 'social__comment');
 
     const avatarImg = createElement('img', 'social__picture');
@@ -57,11 +57,11 @@ const setComments = (comments) => {
 
     if (endIndex >= comments.length) {
       endIndex = comments.length;
-      moreCommentsBtn.classList.add('hidden');
+      moreCommentsButton.classList.add('hidden');
     }
 
-    const newCommentsSection = comments.slice(startIndex, endIndex);
-    commentSection.append(getComments(newCommentsSection));
+    const appendableComments = comments.slice(startIndex, endIndex);
+    commentSection.append(getCommentSectionFragment(appendableComments));
 
     startIndex += 5;
 
@@ -76,10 +76,10 @@ const setPictureData = ({url, description, likes, comments}) => {
   descriptionText.textContent = description;
 
   commentSection.innerHTML = '';
-  showCommentsFunc = setComments(comments);
-  showCommentsFunc();
+  onMoreCommentsButtonClick = setComments(comments);
+  onMoreCommentsButtonClick();
 
-  moreCommentsBtn.addEventListener('click', showCommentsFunc);
+  moreCommentsButton.addEventListener('click', onMoreCommentsButtonClick);
 };
 
 const openBigPictureModal = (pictureData) => {
@@ -91,21 +91,21 @@ const openBigPictureModal = (pictureData) => {
   document.addEventListener('keydown', onDocumentKeydown);
 };
 
-const closeBigPictureModal = () => {
+const onCloseModalButtonClick = () => {
   bigPictureModal.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  moreCommentsBtn.classList.remove('hidden');
+  moreCommentsButton.classList.remove('hidden');
 
-  moreCommentsBtn.removeEventListener('click', showCommentsFunc);
+  moreCommentsButton.removeEventListener('click', onMoreCommentsButtonClick);
   document.removeEventListener('keydown', onDocumentKeydown);
 };
 
 function onDocumentKeydown (evt) {
   if (isEscapeKey(evt)) {
-    closeBigPictureModal();
+    onCloseModalButtonClick();
   }
 }
 
-closeModalBtn.addEventListener('click', closeBigPictureModal);
+closeModalButton.addEventListener('click', onCloseModalButtonClick);
 
 export { openBigPictureModal } ;

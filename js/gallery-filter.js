@@ -2,36 +2,36 @@ import { getArrayOfRandomNumbers, hasAllowedTagName } from './utils.js';
 
 const MAX_RANDOM_PHOTOS = 10;
 
-const filters = document.querySelector('.img-filters');
+const filtersContainer = document.querySelector('.img-filters');
 const filtersForm = document.querySelector('.img-filters__form');
 
 let currentFilter = 'filter-default';
 
 
-const getFilteredArray = (array) => {
-  const newArray = [];
-  let arrayOfRandomNumbers;
+const getFilteredThumbnails = (thumbnails) => {
+  const randomThumbnails = [];
+  let randomNumbers;
 
   switch (currentFilter) {
     case 'filter-random':
-      arrayOfRandomNumbers = getArrayOfRandomNumbers(MAX_RANDOM_PHOTOS, array.length - 1);
+      randomNumbers = getArrayOfRandomNumbers(MAX_RANDOM_PHOTOS, thumbnails.length - 1);
 
-      arrayOfRandomNumbers.forEach((number) => {
-        newArray.push(array[number]);
+      randomNumbers.forEach((number) => {
+        randomThumbnails.push(thumbnails[number]);
       });
 
-      return newArray;
+      return randomThumbnails;
 
     case 'filter-discussed':
-      return array.slice().sort((a, b) => b.comments.length - a.comments.length);
+      return thumbnails.slice().sort((thumbnailA, thumbnailB) => thumbnailB.comments.length - thumbnailA.comments.length);
 
     default:
-      return array;
+      return thumbnails;
   }
 };
 
 const setImgFilters = (cb) => {
-  filters.classList.remove('img-filters--inactive');
+  filtersContainer.classList.remove('img-filters--inactive');
 
   filtersForm.addEventListener('click', (evt) => {
     const targetElement = evt.target;
@@ -50,4 +50,4 @@ const setImgFilters = (cb) => {
 };
 
 
-export { setImgFilters, getFilteredArray };
+export { setImgFilters, getFilteredThumbnails };

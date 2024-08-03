@@ -120,7 +120,7 @@ const setEffectSlider = (imgPreview) => {
   });
 };
 
-const changeEffect = (evt) => {
+const onEffectsListChange = (evt) => {
   const effect = evt.target.value;
 
   const newOptions = effectsData[effect].effectsObj;
@@ -129,4 +129,4 @@ const changeEffect = (evt) => {
   effectSlider.noUiSlider.updateOptions(newOptions);
 };
 
-export { setEffectSlider, changeEffect };
+export { setEffectSlider, onEffectsListChange };

@@ -4,19 +4,19 @@ const thumbnailTemplate = document
   .querySelector('.picture');
 
 const creteThumbnail = ({id, url, description, likes, comments}) => {
-  const newThumbnail = thumbnailTemplate.cloneNode(true);
+  const thumbnail = thumbnailTemplate.cloneNode(true);
 
-  const picture = newThumbnail.querySelector('.picture__img');
+  const photo = thumbnail.querySelector('.picture__img');
 
-  newThumbnail.querySelector('.picture__likes').textContent = likes;
-  newThumbnail.querySelector('.picture__comments').textContent = comments.length;
+  thumbnail.querySelector('.picture__likes').textContent = likes;
+  thumbnail.querySelector('.picture__comments').textContent = comments.length;
 
-  picture.src = url;
-  picture.alt = description;
+  photo.src = url;
+  photo.alt = description;
 
-  newThumbnail.dataset.photoId = id;
+  thumbnail.dataset.photoId = id;
 
-  return newThumbnail;
+  return thumbnail;
 };
 
 export { creteThumbnail };

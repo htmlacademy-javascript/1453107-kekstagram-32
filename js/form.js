@@ -1,7 +1,7 @@
 import { sendData } from './api.js';
 import { isEscapeKey, hasAllowedTagName } from './utils.js';
 import { resetTransformStyle, resizeImg } from './picture-scale.js';
-import { setEffectSlider, changeEffect } from './picture-effect.js';
+import { setEffectSlider, onEffectsListChange } from './picture-effect.js';
 import { addValidators, validateForm, clearValidator } from './form-validation.js';
 import { showPopupMessage, isPopupClosed } from './form-popups.js';
 
@@ -11,8 +11,8 @@ const overlay = document.querySelector('.img-upload__overlay');
 
 const form = document.querySelector('.img-upload__form');
 const imgInput = form.querySelector('.img-upload__input');
-const closeBtn = form.querySelector('.img-upload__cancel');
-const submitBtn = form.querySelector('.img-upload__submit');
+const closeButton = form.querySelector('.img-upload__cancel');
+const submitButton = form.querySelector('.img-upload__submit');
 
 const imgScaleFieldset = form.querySelector('.img-upload__scale');
 const imgScaleInput = imgScaleFieldset.querySelector('.scale__control--value');
@@ -39,7 +39,7 @@ const errorMessageTemplate = document
 
 const isNotFormInput = () => document.activeElement.name !== 'hashtags' && document.activeElement.name !== 'description';
 
-const chageImgScale = (evt) => {
+const onImgScaleFieldsetClick = (evt) => {
   if (hasAllowedTagName(evt.target, ['BUTTON'])) {
     resizeImg(evt.target, imgScaleInput, imgPreview);
   }
@@ -53,7 +53,7 @@ const setUploadedImg = (file) => {
   });
 };
 
-const openUploadImgModal = () => {
+const onImgInputChange = () => {
   const file = imgInput.files[0];
   const isRightFormat = IMGS_FORMATS
     .some((format) => file.name.toLowerCase().endsWith(format));
@@ -72,23 +72,23 @@ const openUploadImgModal = () => {
   overlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
-  imgScaleFieldset.addEventListener('click', chageImgScale);
-  effectsList.addEventListener('change', changeEffect);
+  imgScaleFieldset.addEventListener('click', onImgScaleFieldsetClick);
+  effectsList.addEventListener('change', onEffectsListChange);
 
-  document.addEventListener('keydown', onDocumentKeydownModal);
+  document.addEventListener('keydown', onDocumentKeydown);
   form.addEventListener('submit', onFormSubmit);
 
   addValidators(form, hashtagsInput, descriptionInput);
 };
 
-const closeUploadImgModal = () => {
+const onCloseButtonClick = () => {
   overlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
-  imgScaleFieldset.removeEventListener('click', chageImgScale);
-  effectsList.removeEventListener('change', changeEffect);
+  imgScaleFieldset.removeEventListener('click', onImgScaleFieldsetClick);
+  effectsList.removeEventListener('change', onEffectsListChange);
 
-  document.removeEventListener('keydown', onDocumentKeydownModal);
+  document.removeEventListener('keydown', onDocumentKeydown);
   form.removeEventListener('submit', onFormSubmit);
 
   form.reset();
@@ -101,34 +101,34 @@ function onFormSubmit (evt) {
   const isValid = validateForm();
 
   if (isValid) {
-    submitBtn.disabled = true;
+    submitButton.disabled = true;
 
     const formData = new FormData(form);
     sendData(formData)
       .then(() => {
-        closeUploadImgModal();
+        onCloseButtonClick();
         showPopupMessage(successMessageTemplate);
       })
       .catch(() => {
         showPopupMessage(errorMessageTemplate);
       })
       .finally(() => {
-        submitBtn.disabled = false;
+        submitButton.disabled = false;
       });
   }
 }
 
-const imgInputListener = () => {
-  imgInput.addEventListener('change', openUploadImgModal);
+const setImgInputListener = () => {
+  imgInput.addEventListener('change', onImgInputChange);
 };
 
-function onDocumentKeydownModal (evt) {
+function onDocumentKeydown (evt) {
   if (isEscapeKey(evt) && isNotFormInput() && isPopupClosed()) {
-    closeUploadImgModal();
+    onCloseButtonClick();
   }
 }
 
-closeBtn.addEventListener('click', closeUploadImgModal);
+closeButton.addEventListener('click', onCloseButtonClick);
 
 
-export { imgInputListener };
+export { setImgInputListener };

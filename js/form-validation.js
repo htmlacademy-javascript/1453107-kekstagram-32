@@ -2,7 +2,7 @@ const MAX_HASHTAGS_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
 const MAX_DESCRIPTION_LENGTH = 140;
 
-const hashtagReg = /^#[а-яёa-z0-9]{1,19}$/;
+const REGEX_HASHTAG = /^#[а-яёa-z0-9]{1,19}$/;
 
 let pristine;
 
@@ -22,23 +22,23 @@ const errorMessage = {
 
 const validateHashtag = (value) => {
 
-  const hashtagsArray = value
+  const hashtags = value
     .toLowerCase()
     .replaceAll(' ', '')
     .replaceAll('#', '_#')
     .split('_')
-    .filter((i) => i);
+    .filter((hashtag) => hashtag);
 
-  if (hashtagsArray.length > MAX_HASHTAGS_COUNT) {
+  if (hashtags.length > MAX_HASHTAGS_COUNT) {
     errorMessage.hashtag = hashtagsErrorMessageTemplates.limitCount;
     return false;
   }
 
   let isValid = true;
 
-  hashtagsArray.forEach((hashtag) => {
+  hashtags.forEach((hashtag) => {
 
-    if (!hashtagReg.test(hashtag)) {
+    if (!REGEX_HASHTAG.test(hashtag)) {
       errorMessage.hashtag = hashtagsErrorMessageTemplates.spellingError;
       isValid = false;
     }
@@ -48,7 +48,7 @@ const validateHashtag = (value) => {
       isValid = false;
     }
 
-    if (hashtagsArray.filter((i) => i === hashtag).length > 1) {
+    if (hashtags.filter((item) => item === hashtag).length > 1) {
       errorMessage.hashtag = hashtagsErrorMessageTemplates.duplicate;
       isValid = false;
     }

@@ -1,6 +1,6 @@
 import { loadGallery } from './gallery.js';
-import { imgInputListener } from './form.js';
+import { setImgInputListener } from './form.js';
 
 
 loadGallery();
-imgInputListener();
+setImgInputListener();

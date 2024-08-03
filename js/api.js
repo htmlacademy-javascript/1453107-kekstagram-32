@@ -12,12 +12,12 @@ const ErrorText = {
 
 const load = (route, errorText, method, body = null) =>
   fetch(`${BASE_URL}${route}`, {method, body})
-    .then((res) => {
-      if (!res.ok) {
+    .then((response) => {
+      if (!response.ok) {
         throw new Error();
       }
 
-      return res.json();
+      return response.json();
     })
     .catch(() => {
       throw new Error(errorText);
@@ -28,4 +28,4 @@ const getData = () => load(Route.GET_DATA, ErrorText.GET_DATA, 'GET');
 const sendData = (formData) => load(Route.SEND_DATA, ErrorText.SEND_DATA, 'POST', formData);
 
 
-export {getData, sendData};
+export { getData, sendData };
